@@ -8,6 +8,12 @@
 <meta name="description" content="WORKFLOW personal diary, tasks, meetings, calendar, notes and planning command centre">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233f4d43'/%3E%3Crect x='14' y='9' width='37' height='46' rx='5' fill='%23f7f1e7'/%3E%3Cpath d='M20 20h25M20 29h25M20 38h18' stroke='%233f4d43' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='45' cy='46' r='8' fill='%23d5a45c'/%3E%3Cpath d='M41.5 46l2.5 2.5 5-6' stroke='white' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
 <style>
+/* GRAND v5 UI upgrades: slide-out navigation, stream workspaces and visual analytics */
+.menu-toggle{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;padding:0;font-size:20px}
+.side-drawer{position:fixed;inset:0;z-index:70;pointer-events:none}.side-drawer.open{pointer-events:auto}.drawer-backdrop{position:absolute;inset:0;background:rgba(25,23,19,.42);opacity:0;transition:opacity .22s}.side-drawer.open .drawer-backdrop{opacity:1}.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:min(340px,88vw);background:var(--paper);border-right:1px solid var(--line);box-shadow:18px 0 50px rgba(0,0,0,.18);transform:translateX(-105%);transition:transform .24s ease;padding:18px;overflow:auto}.side-drawer.open .drawer-panel{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:12px}.drawer-brand{font-weight:950;letter-spacing:.08em}.drawer-nav{display:grid;gap:6px}.drawer-nav .btn{text-align:left}.drawer-section{margin-top:18px}.drawer-stream{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);margin:6px 0}.drawer-stream button{flex:1;text-align:left;border:0;background:none;color:var(--ink);font-weight:750;padding:0}.stream-workspace{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.stream-work-card{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.stream-task{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-top:1px dashed var(--line);font-size:12px}.stream-task:first-child{border-top:0}.stream-task .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);margin-top:5px;flex:none}.stream-task.done .dot{background:var(--ok)}.stream-task.done .task-title{text-decoration:line-through;color:var(--muted)}.stream-empty{padding:8px 0;color:var(--muted);font-size:11px}.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.chart-card{border:1px solid var(--line);border-radius:15px;padding:14px;background:var(--panel)}.donut-wrap{display:flex;align-items:center;gap:18px}.donut{width:150px;height:150px;border-radius:50%;background:conic-gradient(var(--accent) var(--pct,0%),#e7e0d6 0);display:grid;place-items:center;flex:none}.donut::after{content:'';width:92px;height:92px;border-radius:50%;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line)}.donut-label{margin-left:-115px;width:80px;text-align:center;font-weight:950;font-size:20px;z-index:1}.bar-chart{display:grid;gap:9px}.bar-row{display:grid;grid-template-columns:minmax(90px,1fr) 2fr 42px;gap:8px;align-items:center;font-size:11px}.bar-track{height:12px;border-radius:99px;background:#e8e1d7;overflow:hidden}.bar-fill{height:100%;border-radius:99px;background:var(--accent);min-width:2px}.bar-fill.alt{background:var(--accent2)}.spark-chart{height:150px;display:flex;align-items:end;gap:7px;padding:12px 4px 0;border-bottom:1px solid var(--line)}.spark-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:end}.spark-bar{width:100%;max-width:34px;border-radius:7px 7px 0 0;background:var(--accent);min-height:2px}.spark-label{font-size:9px;color:var(--muted)}
+@media(max-width:760px){.stream-workspace,.chart-grid{grid-template-columns:1fr}.drawer-panel{width:min(360px,92vw)}}
+
 :root{--paper:#f7f2e9;--panel:#fffdf9;--ink:#29332d;--muted:#756f66;--line:#ddd5c9;--accent:#43584b;--accent2:#d1a05b;--danger:#a34e43;--ok:#4e7657;--shadow:0 10px 30px rgba(48,42,35,.08);--radius:18px}
 *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.45 Inter,system-ui,-apple-system,Segoe UI,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}.wrap{max-width:1500px;margin:auto;padding:22px}
 .topbar{position:sticky;top:0;z-index:30;background:rgba(247,242,233,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.topbar-inner{max-width:1500px;margin:auto;padding:11px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:900;letter-spacing:.08em}.brand small{display:block;font-weight:600;letter-spacing:0;color:var(--muted);font-size:11px}.actions,.nav{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
@@ -44,9 +50,10 @@ input,select,textarea{width:100%;border:1px solid var(--line);background:#fffefa
 </div>
 </section>
 
+<section id="sideDrawer" class="side-drawer" aria-hidden="true"><div class="drawer-backdrop" onclick="toggleDrawer(false)"></div><aside class="drawer-panel"><div class="drawer-head"><div><div class="drawer-brand">WORKFLOW</div><div class="mini muted">Your sliding command bar</div></div><button class="btn menu-toggle" onclick="toggleDrawer(false)">✕</button></div><div class="drawer-nav"><button class="btn" onclick="drawerView('home')">⌂ Home</button><button class="btn" onclick="drawerView('calendar')">▦ Calendar</button><button class="btn" onclick="drawerView('tasks')">✓ All Tasks</button><button class="btn" onclick="drawerView('meetings')">◷ Meetings</button><button class="btn" onclick="drawerView('notes')">✎ Notes</button><button class="btn" onclick="drawerView('analytics')">◔ Graphical Analytics</button><button class="btn" onclick="drawerView('settings')">⚙ Settings</button></div><div class="drawer-section"><div class="eyebrow">STREAMS</div><div id="drawerStreams"></div><button class="btn primary" style="width:100%;margin-top:8px" onclick="toggleDrawer(false);openStream()">＋ New stream</button></div></aside></section>
 <section id="app" class="hidden">
 <header class="topbar"><div class="topbar-inner">
-<div class="brand">WORKFLOW <small>Grand Personal Command Centre</small></div>
+<div class="actions"><button class="btn menu-toggle" aria-label="Open navigation" onclick="toggleDrawer(true)">☰</button><div class="brand">WORKFLOW <small>Grand Personal Command Centre</small></div></div>
 <div class="actions">
 <span id="syncStatus" class="status">Local cache</span>
 <button class="btn" onclick="showView('home')">⌂ Home</button>
@@ -67,6 +74,7 @@ input,select,textarea{width:100%;border:1px solid var(--line);background:#fffefa
 <div class="card wide"><div class="split"><h3>Attention queue</h3><button class="btn small" onclick="showView('tasks')">Open register</button></div><div id="attention" class="list"></div></div>
 <div class="card"><h3>Today's agenda</h3><div id="todayAgenda" class="list"></div></div>
 <div class="card full"><div class="split"><div><h3>Work streams</h3><div class="muted mini">Projects, subjects, departments or any area of work.</div></div><button class="btn primary" onclick="openStream()">＋ New stream</button></div><div id="streams" class="streams" style="margin-top:10px"></div></div>
+<div class="card full"><div class="split"><div><h3>Stream workspaces</h3><div class="muted mini">Each stream has its own task set. Use the buttons below to jump directly into that stream.</div></div></div><div id="streamWorkspace" class="stream-workspace"></div></div>
 <div class="card"><h3>Workload</h3><div id="workload"></div></div>
 <div class="card wide"><h3>Progress snapshot</h3><div id="progressSnapshot"></div></div>
 <div class="card full"><h3>Notifications</h3><div id="notificationPanel"></div></div>
@@ -95,7 +103,7 @@ input,select,textarea{width:100%;border:1px solid var(--line);background:#fffefa
 
 <section id="analyticsView" class="hidden">
 <div class="hero"><div><div class="eyebrow">REVIEW // ANALYTICS</div><h2>Planning intelligence</h2><p class="sub">Completion, workload, streams, deadlines and attention signals.</p></div></div>
-<div class="grid"><div class="card full"><div id="analyticsStats" class="stat-grid"></div></div><div class="card wide"><h3>Stream progress</h3><div id="analyticsStreams"></div></div><div class="card"><h3>Priority distribution</h3><div id="analyticsPriority"></div></div><div class="card full"><h3>Upcoming workload</h3><div id="analyticsUpcoming"></div></div></div>
+<div class="grid"><div class="card full"><div id="analyticsStats" class="stat-grid"></div></div><div class="card full"><div class="chart-grid"><div class="chart-card"><h3>Completion overview</h3><div id="completionChart"></div></div><div class="chart-card"><h3>Priority distribution</h3><div id="priorityChart"></div></div></div></div><div class="card full"><h3>Work by stream</h3><div id="streamChart"></div></div><div class="card full"><h3>7-day workload outlook</h3><div id="weekChart"></div></div><div class="card wide"><h3>Stream progress</h3><div id="analyticsStreams"></div></div><div class="card"><h3>Priority distribution</h3><div id="analyticsPriority"></div></div><div class="card full"><h3>Upcoming workload</h3><div id="analyticsUpcoming"></div></div></div>
 </section>
 
 <section id="settingsView" class="hidden"><div class="hero"><div><div class="eyebrow">CONTROL // SETTINGS</div><h2>System settings</h2></div></div><div class="grid" id="settingsGrid"></div></section>
@@ -108,17 +116,21 @@ input,select,textarea{width:100%;border:1px solid var(--line);background:#fffefa
 const APP_VERSION='5.0';
 const KEY='workflow_grand_v5';
 let db=loadLocal(),session=null,serverVersion=Number(localStorage.getItem('workflow_server_version_v5')||0);
-let currentView='home',calendarMode=(db.settings?.ui?.defaultView||'month'),calendarCursor=new Date(),saveTimer=null,saving=false,pendingSave=false;
+let currentView='home',calendarMode=(db.settings?.ui?.defaultView||'month'),calendarCursor=appTodayDate(),saveTimer=null,saving=false,pendingSave=false;
 let googleEvents=[],syncBusy=false;
 
 function uid(p='id'){return p+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
+const APP_TZ='Asia/Kolkata';
 function nowISO(){return new Date().toISOString()}
-function localISODate(d=new Date()){return d.toISOString().slice(0,10)}
+function appParts(d=new Date()){let parts=new Intl.DateTimeFormat('en-CA',{timeZone:APP_TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(d);let o={};parts.forEach(p=>o[p.type]=p.value);return o}
+function localISODate(d=new Date()){let p=appParts(d);return `${p.year}-${p.month}-${p.day}`}
+function appTodayDate(){let p=appParts(new Date());return new Date(Number(p.year),Number(p.month)-1,Number(p.day),12,0,0,0)}
+function appHour(){return Number(appParts(new Date()).hour)}
 function esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function dateOnly(v){return String(v||'').slice(0,10)}
+function dateOnly(v){if(!v)return '';let s=String(v);if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;let d=new Date(v);return isNaN(d)?s.slice(0,10):localISODate(d)}
 function parseLocalDateTime(v){if(!v)return '';let d=new Date(v);return isNaN(d)?'':d.toISOString()}
-function localDateTime(v){if(!v)return '';let d=new Date(v);return isNaN(d)?String(v):d.toLocaleString([], {dateStyle:'medium',timeStyle:'short'})}
-function localTime(v){if(!v)return '';let d=new Date(v);return isNaN(d)?'':d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+function localDateTime(v){if(!v)return '';let d=new Date(v);return isNaN(d)?String(v):d.toLocaleString([], {dateStyle:'medium',timeStyle:'short',timeZone:APP_TZ})}
+function localTime(v){if(!v)return '';let d=new Date(v);return isNaN(d)?'':d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',timeZone:APP_TZ})}
 function normalize(x){
  x=x||{};x.streams=Array.isArray(x.streams)?x.streams:[];x.tasks=Array.isArray(x.tasks)?x.tasks:[];x.meetings=Array.isArray(x.meetings)?x.meetings:[];x.notes=Array.isArray(x.notes)?x.notes:[];x.milestones=Array.isArray(x.milestones)?x.milestones:[];
  x.settings=x.settings||{};x.settings.email=Object.assign({dailyEnabled:false,dailyHour:8,weeklyEnabled:false,weeklyDay:1,weeklyHour:8,recipients:[],includeOverdue:true,includeDueToday:true,includeCompleted:true,includeWeeklyStats:true,includeMeetings:true,includeUpcoming:true},x.settings.email||{});
@@ -193,10 +205,16 @@ function allEvents(){
  if(db.settings.calendar.showExternal)googleEvents.forEach(e=>a.push(e));
  return a.sort((a,b)=>new Date(a.at)-new Date(b.at));
 }
-function renderAll(){applyTheme();renderHome();renderTasks();renderMeetings();renderNotes();renderCalendar();renderAnalytics();renderSettings()}
+function toggleDrawer(open){let d=document.getElementById('sideDrawer');if(!d)return;d.classList.toggle('open',open);d.setAttribute('aria-hidden',open?'false':'true');if(open)renderDrawerStreams()}
+function drawerView(v){toggleDrawer(false);showView(v)}
+function openStreamTasks(id){toggleDrawer(false);showView('tasks');let e=document.getElementById('taskStreamFilter');if(e){e.value=id;renderTasks()}}
+function addStreamTask(id){openTask('',id)}
+function renderDrawerStreams(){let e=document.getElementById('drawerStreams');if(!e)return;e.innerHTML=db.streams.filter(s=>!s.archived).length?db.streams.filter(s=>!s.archived).map(s=>{let n=db.tasks.filter(t=>t.streamId===s.id&&!taskDone(t)).length;return `<div class="drawer-stream"><button onclick="openStreamTasks('${esc(s.id)}')">${esc(s.name)}</button><span class="badge">${n}</span></div>`}).join(''):'<div class="muted mini">Create a stream to see it here.</div>'}
+function renderStreamWorkspace(){let e=document.getElementById('streamWorkspace');if(!e)return;let streams=db.streams.filter(s=>!s.archived);e.innerHTML=streams.length?streams.map(s=>{let ts=db.tasks.filter(t=>t.streamId===s.id).sort((a,b)=>Number(taskDone(a))-Number(taskDone(b))||new Date(a.dueAt||'2999-12-31')-new Date(b.dueAt||'2999-12-31'));let shown=ts.slice(0,6);return `<div class="stream-work-card"><div class="split"><div><b>${esc(s.name)}</b><div class="mini muted">${ts.filter(taskDone).length}/${ts.length} complete</div></div><button class="btn small" onclick="openStreamTasks('${esc(s.id)}')">Open</button></div><div style="margin:8px 0" class="progress"><i style="width:${ts.length?Math.round(ts.filter(taskDone).length/ts.length*100):0}%"></i></div>${shown.length?shown.map(t=>`<div class="stream-task ${taskDone(t)?'done':''}"><div class="dot"></div><div style="flex:1"><div class="task-title">${esc(t.title||t.detail||'Untitled')}</div><div class="mini muted">${esc(t.status||'Backlog')} · ${esc(t.priority||'Medium')}${t.dueAt?' · '+esc(dateOnly(t.dueAt)):''}</div></div></div>`).join(''):'<div class="stream-empty">No tasks in this stream yet.</div>'}<button class="btn small" style="margin-top:8px" onclick="addStreamTask('${esc(s.id)}')">＋ Add task to ${esc(s.name)}</button></div>`}).join(''):'<div class="muted">No streams yet. Create one to give it its own task set.</div>'}
+function renderAll(){applyTheme();renderHome();renderStreamWorkspace();renderDrawerStreams();renderTasks();renderMeetings();renderNotes();renderCalendar();renderAnalytics();renderSettings()}
 function renderHome(){
  let today=localISODate(),active=db.tasks.filter(t=>!taskDone(t)).length,done=db.tasks.filter(taskDone).length,over=db.tasks.filter(t=>taskDueState(t)==='overdue').length,due=db.tasks.filter(t=>taskDueState(t)==='today').length;
- document.getElementById('greeting').textContent=new Date().getHours()<12?'Good morning.':new Date().getHours()<18?'Good afternoon.':'Good evening.';
+ document.getElementById('greeting').textContent=appHour()<12?'Good morning.':appHour()<18?'Good afternoon.':'Good evening.';
  document.getElementById('kpis').innerHTML=[['Active',active],['Due today',due],['Overdue',over],['Completed',done],['Meetings today',db.meetings.filter(m=>dateOnly(m.startAt||m.date)===today).length],['Pending hours',Math.round(db.tasks.filter(t=>!taskDone(t)).reduce((n,t)=>n+Number(t.estimateMinutes||0),0)/60*10)/10],['Blocked',db.tasks.filter(t=>!taskDone(t)&&t.status==='Blocked').length],['Streams',db.streams.length]].map(x=>`<div class="stat"><div class="klabel">${x[0]}</div><div class="kpi">${x[1]}</div></div>`).join('');
  let attention=db.tasks.filter(t=>!taskDone(t)&&attentionScore(t)>0).sort((a,b)=>attentionScore(b)-attentionScore(a)).slice(0,8);
  document.getElementById('attention').innerHTML=attention.length?attention.map(t=>`<div class="agenda-item"><div class="event-dot"></div><div style="flex:1"><b class="${taskDueState(t)==='overdue'?'danger-text':''}">${esc(t.title||t.detail||'Untitled')}</b><div class="mini muted">${esc(streamName(t.streamId))} · ${esc(t.status||'Backlog')} · Attention ${attentionScore(t)}/100 · ${t.dueAt?localDateTime(t.dueAt):'No deadline'}</div></div><button class="btn small" onclick="openTask('${t.id}')">Edit</button></div>`).join(''):'<div class="muted">Nothing urgent. Your queue is clear.</div>';
@@ -234,7 +252,7 @@ function renderNotes(){
 function monthStart(d){return new Date(d.getFullYear(),d.getMonth(),1)}
 function setCalendarMode(m){calendarMode=m;calendarCursor=new Date(calendarCursor);renderCalendar()}
 function calendarMove(n){if(calendarMode==='month')calendarCursor.setMonth(calendarCursor.getMonth()+n);else if(calendarMode==='week')calendarCursor.setDate(calendarCursor.getDate()+7*n);else calendarCursor.setDate(calendarCursor.getDate()+n);renderCalendar()}
-function calendarToday(){calendarCursor=new Date();renderCalendar()}
+function calendarToday(){calendarCursor=appTodayDate();renderCalendar()}
 function renderCalendar(){
  document.getElementById('calendarTitle').innerHTML=`<h3>${calendarMode==='month'?calendarCursor.toLocaleString([],{month:'long',year:'numeric'}):calendarCursor.toLocaleDateString([],{dateStyle:'full'})}</h3><span class="muted mini">${allEvents().length} visible events${googleEvents.length?' · '+googleEvents.length+' from Google Calendar':''}</span>`;
  ['Month','Week','Day','Agenda'].forEach(x=>{let b=document.getElementById('cv'+x);if(b)b.className='btn '+(calendarMode===x.toLowerCase()?'primary':'')});
@@ -263,8 +281,8 @@ function renderAgenda(){
 function openExternalEvent(id){let e=googleEvents.find(x=>x.id===id);if(!e)return;alert((e.title||'Google Calendar event')+'\n\n'+localDateTime(e.at)+(e.end?' → '+localDateTime(e.end):'')+'\n\n'+(e.description||''))}
 function openEvent(type,id){type==='task'?openTask(id):openMeeting(id)}
 
-function openTask(id=''){
- let t=db.tasks.find(x=>x.id===id)||{id:'',title:'',description:'',streamId:db.streams[0]?.id||'',subject:'',type:'General',priority:db.settings.ui.defaultPriority||'Medium',status:'Backlog',startAt:'',dueAt:'',estimateMinutes:30,tags:[],dependencies:[],recurrence:'',milestoneId:'',completed:false};
+function openTask(id='',presetStream=''){
+ let t=db.tasks.find(x=>x.id===id)||{id:'',title:'',description:'',streamId:presetStream||db.streams[0]?.id||'',subject:'',type:'General',priority:db.settings.ui.defaultPriority||'Medium',status:'Backlog',startAt:'',dueAt:'',estimateMinutes:30,tags:[],dependencies:[],recurrence:'',milestoneId:'',completed:false};
  let depOptions=db.tasks.filter(x=>x.id!==id).map(x=>`<option value="${esc(x.id)}">${esc(x.title||x.id)}</option>`).join('');
  let mileOptions=db.milestones.map(x=>`<option value="${esc(x.id)}" ${x.id===t.milestoneId?'selected':''}>${esc(x.title)}</option>`).join('');
  document.getElementById('modalTitle').textContent=id?'Edit task':'New task';
@@ -353,10 +371,17 @@ function openMilestone(id=''){let m=db.milestones.find(x=>x.id===id)||{id:'',tit
 function saveMilestone(id){let m=db.milestones.find(x=>x.id===id);if(!m){m={id:uid('milestone'),createdAt:nowISO()};db.milestones.push(m)}Object.assign(m,{title:document.getElementById('miTitle').value.trim(),dueDate:document.getElementById('miDate').value,status:document.getElementById('miStatus').value,description:document.getElementById('miDesc').value,updatedAt:nowISO()});if(!m.title){toast('Milestone title is required.',true);return}closeModal();queueSave();renderAll()}
 function deleteMilestone(id){db.milestones=db.milestones.filter(x=>x.id!==id);db.tasks.forEach(t=>{if(t.milestoneId===id)t.milestoneId=''});queueSave();renderAll()}
 function renderAnalytics(){
- let total=db.tasks.length,done=db.tasks.filter(taskDone).length,active=total-done,over=db.tasks.filter(t=>taskDueState(t)==='overdue').length,mins=db.tasks.filter(t=>!taskDone(t)).reduce((n,t)=>n+Number(t.estimateMinutes||0),0);
- document.getElementById('analyticsStats').innerHTML=[['Completion',total?Math.round(done/total*100)+'%':'0%'],['Active',active],['Overdue',over],['Workload',Math.round(mins/60*10)/10+'h'],['High priority',db.tasks.filter(t=>t.priority==='High'&&!taskDone(t)).length],['Blocked',db.tasks.filter(t=>t.status==='Blocked'&&!taskDone(t)).length],['Meetings',db.meetings.length],['Notes',db.notes.length]].map(x=>`<div class="stat"><div class="klabel">${x[0]}</div><div class="kpi">${x[1]}</div></div>`).join('');
+ let total=db.tasks.length,done=db.tasks.filter(taskDone).length,active=total-done,over=db.tasks.filter(t=>taskDueState(t)==='overdue').length,mins=db.tasks.filter(t=>!taskDone(t)).reduce((n,t)=>n+Number(t.estimateMinutes||0),0),pct=total?Math.round(done/total*100):0;
+ document.getElementById('analyticsStats').innerHTML=[['Completion',pct+'%'],['Active',active],['Overdue',over],['Workload',Math.round(mins/60*10)/10+'h'],['High priority',db.tasks.filter(t=>t.priority==='High'&&!taskDone(t)).length],['Blocked',db.tasks.filter(t=>t.status==='Blocked'&&!taskDone(t)).length],['Meetings',db.meetings.length],['Notes',db.notes.length]].map(x=>`<div class="stat"><div class="klabel">${x[0]}</div><div class="kpi">${x[1]}</div></div>`).join('');
+ document.getElementById('completionChart').innerHTML=`<div class="donut-wrap"><div class="donut" style="--pct:${pct}%"></div><div class="donut-label">${pct}%</div><div><b>${done}</b> completed<br><span class="muted">${active} active · ${over} overdue</span></div></div>`;
+ let pc=['High','Medium','Low'].map(p=>[p,db.tasks.filter(t=>t.priority===p).length]),pmax=Math.max(1,...pc.map(x=>x[1]));
+ document.getElementById('priorityChart').innerHTML=`<div class="bar-chart">${pc.map((x,i)=>`<div class="bar-row"><b>${x[0]}</b><div class="bar-track"><div class="bar-fill ${i===1?'alt':''}" style="width:${Math.round(x[1]/pmax*100)}%"></div></div><span>${x[1]}</span></div>`).join('')}</div>`;
+ let sc=db.streams.filter(s=>!s.archived).map(s=>{let ts=db.tasks.filter(t=>t.streamId===s.id);return [s.name,ts.length,ts.filter(taskDone).length,ts.filter(t=>!taskDone(t)).reduce((n,t)=>n+Number(t.estimateMinutes||0),0)]});let smax=Math.max(1,...sc.map(x=>x[1]));
+ document.getElementById('streamChart').innerHTML=sc.length?`<div class="bar-chart">${sc.map(x=>`<div class="bar-row"><b title="${esc(x[0])}">${esc(x[0])}</b><div class="bar-track"><div class="bar-fill" style="width:${Math.round(x[1]/smax*100)}%"></div></div><span>${x[1]} · ${Math.round(x[3]/60*10)/10}h</span></div>`).join('')}</div>`:'<div class="muted">No stream data yet.</div>';
+ let days=[];for(let i=0;i<7;i++){let d=appTodayDate();d.setDate(d.getDate()+i);let key=localISODate(d),items=db.tasks.filter(t=>!taskDone(t)&&t.dueAt&&dateOnly(t.dueAt)===key),m=items.reduce((n,t)=>n+Number(t.estimateMinutes||0),0);days.push([key,m,items.length])}let dmax=Math.max(1,...days.map(x=>x[1]));
+ document.getElementById('weekChart').innerHTML=`<div class="spark-chart">${days.map(x=>`<div class="spark-col"><div class="mini muted">${x[2]}</div><div class="spark-bar" style="height:${Math.max(3,Math.round(x[1]/dmax*110))}px" title="${x[1]} minutes"></div><div class="spark-label">${new Date(x[0]+'T12:00:00').toLocaleDateString([],{weekday:'short'})}</div></div>`).join('')}</div><div class="mini muted" style="margin-top:8px">Bars represent estimated minutes from active tasks due each day.</div>`;
  document.getElementById('analyticsStreams').innerHTML=db.streams.length?db.streams.map(s=>{let ts=db.tasks.filter(t=>t.streamId===s.id),d=ts.filter(taskDone).length,p=ts.length?Math.round(d/ts.length*100):0;return `<div style="margin:12px 0"><div class="split"><b>${esc(s.name)}</b><span>${d}/${ts.length} · ${p}%</span></div><div class="progress"><i style="width:${p}%"></i></div></div>`}).join(''):'<div class="muted">No streams.</div>';
- let pc=['High','Medium','Low'].map(p=>[p,db.tasks.filter(t=>t.priority===p).length]);document.getElementById('analyticsPriority').innerHTML=pc.map(x=>`<div class="notice"><b>${x[0]}</b><span style="float:right">${x[1]}</span></div>`).join('');
+ document.getElementById('analyticsPriority').innerHTML=pc.map(x=>`<div class="notice"><b>${x[0]}</b><span style="float:right">${x[1]}</span></div>`).join('');
  let upcoming=db.tasks.filter(t=>!taskDone(t)&&t.dueAt).sort((a,b)=>new Date(a.dueAt)-new Date(b.dueAt)).slice(0,15);document.getElementById('analyticsUpcoming').innerHTML=upcoming.length?upcoming.map(t=>`<div class="agenda-item"><div class="time">${dateOnly(t.dueAt)}</div><div style="flex:1"><b>${esc(t.title)}</b><div class="mini muted">${esc(streamName(t.streamId))} · ${t.priority} · ${t.estimateMinutes||0} min</div></div></div>`).join(''):'<div class="muted">No upcoming deadlines.</div>';
 }
 function saveBackendUrl(){let v=document.getElementById('scriptUrl').value.trim();if(v)localStorage.setItem('workflow_script_url_v5',v);renderSettings();toast('Backend URL saved.')}
@@ -379,7 +404,7 @@ async function restoreBackup(id){if(!confirm('Restore this server backup?'))retu
 function closeModal(){document.getElementById('modal').classList.add('hidden')}
 document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()})
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()})
-document.getElementById('bootUrl').value=backendUrl();
+document.getElementById('bootUrl').value=backendUrl();calendarCursor=appTodayDate();
 </script>
 </body>
 </html>
