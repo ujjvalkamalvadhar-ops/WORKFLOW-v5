@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WORKFLOW — Grand Personal Command Centre</title>
+<meta name="theme-color" content="#3f4d43">
+<meta name="description" content="WORKFLOW personal diary, tasks, meetings, calendar, notes and planning command centre">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233f4d43'/%3E%3Crect x='14' y='9' width='37' height='46' rx='5' fill='%23f7f1e7'/%3E%3Cpath d='M20 20h25M20 29h25M20 38h18' stroke='%233f4d43' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='45' cy='46' r='8' fill='%23d5a45c'/%3E%3Cpath d='M41.5 46l2.5 2.5 5-6' stroke='white' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
+<style>
+:root{--paper:#f7f2e9;--panel:#fffdf9;--ink:#29332d;--muted:#756f66;--line:#ddd5c9;--accent:#43584b;--accent2:#d1a05b;--danger:#a34e43;--ok:#4e7657;--shadow:0 10px 30px rgba(48,42,35,.08);--radius:18px}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.45 Inter,system-ui,-apple-system,Segoe UI,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}.wrap{max-width:1500px;margin:auto;padding:22px}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(247,242,233,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.topbar-inner{max-width:1500px;margin:auto;padding:11px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:900;letter-spacing:.08em}.brand small{display:block;font-weight:600;letter-spacing:0;color:var(--muted);font-size:11px}.actions,.nav{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:9px 12px;font-weight:750;color:var(--ink)}.btn.primary{background:var(--accent);color:white;border-color:var(--accent)}.btn.danger{color:white;background:var(--danger);border-color:var(--danger)}.btn.small{padding:6px 8px;font-size:12px}
+.status{padding:7px 10px;border-radius:99px;font-size:11px;font-weight:850;background:#e9e1d7}.status.ok{background:#dfeee1;color:#35603f}.status.bad{background:#f2ded9;color:#7d3b32}.status.busy{background:#e8e2d4;color:#665a45}
+.hero{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;padding:20px 0}.eyebrow{font-size:11px;font-weight:900;letter-spacing:.14em;color:var(--muted)}h1,h2,h3{margin:5px 0 8px}h1{font-size:34px}h2{font-size:27px}h3{font-size:18px}.sub{color:var(--muted);max-width:800px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{grid-column:span 4;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}.wide{grid-column:span 8}.full{grid-column:1/-1}.half{grid-column:span 6}
+.kpi{font-size:28px;font-weight:900}.klabel{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.08em}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
+input,select,textarea{width:100%;border:1px solid var(--line);background:#fffefa;border-radius:10px;padding:9px;color:var(--ink);outline:none}textarea{min-height:90px;resize:vertical}label{display:block;font-size:11px;font-weight:800;color:var(--muted);margin:8px 0 5px}.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.form-grid .full{grid-column:1/-1}.check{display:flex;gap:8px;align-items:center}.check input{width:auto}.split{display:flex;justify-content:space-between;gap:10px;align-items:center}.mini{font-size:11px}.muted{color:var(--muted)}.list{display:grid;gap:7px}.agenda-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}.time{width:82px;font-weight:900;flex:none}.event-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:6px;flex:none}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.table th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.badge{display:inline-block;padding:3px 7px;border-radius:99px;background:#ece5dc;font-size:10px;font-weight:800;margin:2px}.badge.high{background:#f2d9d3;color:#813d34}.badge.medium{background:#efe3c7}.badge.low{background:#dfeadd;color:#3d6245}.done{text-decoration:line-through;color:#999}.danger-text{color:var(--danger);font-weight:800}.ok-text{color:var(--ok);font-weight:800}
+.streams{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stream{padding:14px;border:1px solid var(--line);border-radius:14px;background:#fffdf9}.progress{height:7px;background:#e8e1d7;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;background:var(--accent)}
+.calendar-shell{overflow:auto}.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(120px,1fr));border:1px solid var(--line);border-radius:15px;overflow:hidden;background:var(--panel);min-width:840px}.cal-head{padding:8px;text-align:center;font-size:10px;font-weight:900;color:var(--muted);border-bottom:1px solid var(--line)}.day{min-height:125px;padding:8px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:#fffdf9}.day.other{background:#f2ede5;color:#aaa}.day.today{outline:2px solid var(--accent);outline-offset:-2px}.daynum{font-weight:900;font-size:12px;margin-bottom:5px}.event{padding:5px 6px;border-radius:7px;background:#e5ece5;margin:4px 0;font-size:11px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.event.meeting{background:#eee5d4}.event.external{background:#e4e8ed}.event.overdue{background:#f2ddda}.week-grid{display:grid;grid-template-columns:70px repeat(7,minmax(130px,1fr));min-width:1050px;border:1px solid var(--line);border-radius:15px;overflow:hidden}.week-cell{min-height:65px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:5px}.week-hour{font-size:10px;color:var(--muted);padding:5px;border-bottom:1px solid var(--line)}.timeline-event{padding:5px;border-radius:7px;margin:3px 0;background:#e5ece5;font-size:11px;cursor:pointer}.timeline-event.meeting{background:#eee5d4}.timeline-event.external{background:#e4e8ed}
+.progress-ring{font-weight:900}.notice{padding:10px;border:1px solid var(--line);border-radius:12px;background:#faf6ef;margin:7px 0}.notice.warn{border-color:#d8b36d;background:#fbf2df}.notice.bad{border-color:#d7a29b;background:#f7e7e3}.notice.ok{border-color:#a9c7ad;background:#e7f1e8}
+.modal{position:fixed;inset:0;background:rgba(30,27,22,.48);z-index:80;display:grid;place-items:center;padding:18px}.modal-box{width:min(900px,100%);max-height:92vh;overflow:auto;background:var(--paper);border-radius:20px;padding:20px;box-shadow:0 25px 80px rgba(0,0,0,.2)}.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.toast{position:fixed;right:18px;bottom:18px;z-index:100;background:var(--ink);color:#fff;padding:12px 15px;border-radius:12px;box-shadow:var(--shadow);max-width:420px}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}.login-card{width:min(520px,100%);background:var(--panel);padding:30px;border-radius:24px;box-shadow:var(--shadow);border:1px solid var(--line)}.diary-logo{width:68px;height:68px;border-radius:18px;background:var(--accent);display:grid;place-items:center;color:#fff;font-size:30px;margin-bottom:16px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{padding:12px;border:1px solid var(--line);border-radius:12px}.feature-list{columns:2}.feature-list div{padding:5px 0}.theme-dark{--paper:#1f2521;--panel:#283029;--ink:#f1eee8;--muted:#bdb7ad;--line:#465047;--accent:#91ad99;--accent2:#d1a05b}.theme-dark input,.theme-dark select,.theme-dark textarea{background:#202720;color:var(--ink)}
+@media(max-width:1050px){.card,.wide,.half{grid-column:1/-1}.streams{grid-template-columns:1fr 1fr}.stat-grid{grid-template-columns:repeat(2,1fr)}.topbar-inner{align-items:flex-start;flex-direction:column}}
+@media(max-width:650px){.wrap{padding:14px}.form-grid{grid-template-columns:1fr}.streams,.stat-grid{grid-template-columns:1fr}.hero{display:block}.actions{width:100%}.feature-list{columns:1}}
+</style>
+</head>
+<body>
+<section id="loginScreen" class="login">
+<div class="login-card">
+<div class="diary-logo">▤</div><div class="eyebrow">WORKFLOW // PRIVATE DESK</div>
+<h1>Your work, in one diary.</h1>
+<p class="sub">Tasks, meetings, calendar, notes, milestones, analytics, reminders and email reports in one personal command centre.</p>
+<label>Username</label><input id="loginUser" autocomplete="username" placeholder="Username">
+<label>Password</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="Password">
+<button class="btn primary" style="width:100%;margin-top:12px" onclick="login()">Enter dashboard →</button>
+<button class="btn" style="width:100%;margin-top:8px" onclick="setup()">First-time setup</button>
+<label style="margin-top:14px">Apps Script Web App URL</label><input id="bootUrl" placeholder="https://script.google.com/macros/s/.../exec">
+<button class="btn" style="width:100%;margin-top:8px" onclick="saveBootUrl()">Save backend URL</button>
+<p id="loginMsg" class="mini muted"></p>
+</div>
+</section>
+
+<section id="app" class="hidden">
+<header class="topbar"><div class="topbar-inner">
+<div class="brand">WORKFLOW <small>Grand Personal Command Centre</small></div>
+<div class="actions">
+<span id="syncStatus" class="status">Local cache</span>
+<button class="btn" onclick="showView('home')">⌂ Home</button>
+<button class="btn" onclick="showView('calendar')">▦ Calendar</button>
+<button class="btn" onclick="showView('tasks')">✓ Tasks</button>
+<button class="btn" onclick="showView('meetings')">◷ Meetings</button>
+<button class="btn" onclick="showView('notes')">✎ Notes</button>
+<button class="btn" onclick="showView('analytics')">◔ Analytics</button>
+<button class="btn" onclick="openSettings()">⚙ Settings</button>
+<button class="btn danger" onclick="logout()">Lock</button>
+</div></div></header>
+
+<main class="wrap">
+<section id="homeView">
+<div class="hero"><div><div class="eyebrow">TODAY // COMMAND CENTRE</div><h1 id="greeting">Your day, in motion.</h1><p class="sub">A high-level view of deadlines, meetings, workload, project progress and items that need attention.</p></div>
+<div class="actions"><button class="btn primary" onclick="openTask()">＋ Task</button><button class="btn" onclick="openMeeting()">＋ Meeting</button><button class="btn" onclick="openNote()">＋ Note</button></div></div>
+<div class="grid"><div class="card full"><div id="kpis" class="stat-grid"></div></div>
+<div class="card wide"><div class="split"><h3>Attention queue</h3><button class="btn small" onclick="showView('tasks')">Open register</button></div><div id="attention" class="list"></div></div>
+<div class="card"><h3>Today's agenda</h3><div id="todayAgenda" class="list"></div></div>
+<div class="card full"><div class="split"><div><h3>Work streams</h3><div class="muted mini">Projects, subjects, departments or any area of work.</div></div><button class="btn primary" onclick="openStream()">＋ New stream</button></div><div id="streams" class="streams" style="margin-top:10px"></div></div>
+<div class="card"><h3>Workload</h3><div id="workload"></div></div>
+<div class="card wide"><h3>Progress snapshot</h3><div id="progressSnapshot"></div></div>
+<div class="card full"><h3>Notifications</h3><div id="notificationPanel"></div></div>
+</div></section>
+
+<section id="calendarView" class="hidden">
+<div class="hero"><div><div class="eyebrow">TIME // PLANNER</div><h2>Calendar & timeline</h2><p class="sub">Dashboard tasks and meetings plus linked Google Calendar events. Linked events can be synchronized back into WORKFLOW.</p></div>
+<div class="nav"><button class="btn" onclick="calendarMove(-1)">‹</button><button class="btn" onclick="calendarToday()">Today</button><button class="btn" onclick="calendarMove(1)">›</button><button class="btn" id="cvMonth" onclick="setCalendarMode('month')">Month</button><button class="btn" id="cvWeek" onclick="setCalendarMode('week')">Week</button><button class="btn" id="cvDay" onclick="setCalendarMode('day')">Day</button><button class="btn" id="cvAgenda" onclick="setCalendarMode('agenda')">Agenda</button><button class="btn primary" onclick="syncGoogleCalendar()">↻ Sync Google Calendar</button></div></div>
+<div class="card full"><div id="calendarTitle" class="split"></div><div id="calendarBody"></div></div>
+</section>
+
+<section id="tasksView" class="hidden">
+<div class="hero"><div><div class="eyebrow">REGISTER // TASKS</div><h2>Task management</h2></div><button class="btn primary" onclick="openTask()">＋ Add task</button></div>
+<div class="card full"><div class="toolbar"><input id="taskSearch" placeholder="Search title, description, tag…" oninput="renderTasks()"><select id="taskStreamFilter" onchange="renderTasks()"><option value="">All streams</option></select><select id="taskStatusFilter" onchange="renderTasks()"><option value="">All statuses</option><option>Backlog</option><option>Next</option><option>In Progress</option><option>Blocked</option><option>Completed</option></select><select id="taskPriorityFilter" onchange="renderTasks()"><option value="">All priorities</option><option>High</option><option>Medium</option><option>Low</option></select><select id="taskTagFilter" onchange="renderTasks()"><option value="">All tags</option></select></div><div class="table-wrap"><table class="table"><thead><tr><th>Task</th><th>Stream</th><th>Schedule</th><th>Status</th><th>Priority</th><th>Tags</th><th>Actions</th></tr></thead><tbody id="taskBody"></tbody></table></div></div>
+</section>
+
+<section id="meetingsView" class="hidden">
+<div class="hero"><div><div class="eyebrow">RECORD // MEETINGS</div><h2>Meetings & reports</h2></div><button class="btn primary" onclick="openMeeting()">＋ Quick meeting</button></div>
+<div class="card full"><div class="toolbar"><input id="meetingSearch" placeholder="Search meetings…" oninput="renderMeetings()"><select id="meetingStreamFilter" onchange="renderMeetings()"><option value="">All streams</option></select></div><div id="meetingList" class="list"></div></div>
+</section>
+
+<section id="notesView" class="hidden">
+<div class="hero"><div><div class="eyebrow">PAPER // NOTES</div><h2>Notes & knowledge</h2></div><button class="btn primary" onclick="openNote()">＋ New note</button></div>
+<div class="card full"><div class="toolbar"><input id="noteSearch" placeholder="Search notes…" oninput="renderNotes()"></div><div id="noteList" class="list"></div></div>
+</section>
+
+<section id="analyticsView" class="hidden">
+<div class="hero"><div><div class="eyebrow">REVIEW // ANALYTICS</div><h2>Planning intelligence</h2><p class="sub">Completion, workload, streams, deadlines and attention signals.</p></div></div>
+<div class="grid"><div class="card full"><div id="analyticsStats" class="stat-grid"></div></div><div class="card wide"><h3>Stream progress</h3><div id="analyticsStreams"></div></div><div class="card"><h3>Priority distribution</h3><div id="analyticsPriority"></div></div><div class="card full"><h3>Upcoming workload</h3><div id="analyticsUpcoming"></div></div></div>
+</section>
+
+<section id="settingsView" class="hidden"><div class="hero"><div><div class="eyebrow">CONTROL // SETTINGS</div><h2>System settings</h2></div></div><div class="grid" id="settingsGrid"></div></section>
+</main></section>
+
+<div id="modal" class="modal hidden"><div class="modal-box"><div class="modal-head"><h3 id="modalTitle">Editor</h3><button class="btn" onclick="closeModal()">✕</button></div><div id="modalBody"></div></div></div>
+<div id="toast" class="toast hidden"></div>
+
+<script>
+const APP_VERSION='5.0';
+const KEY='workflow_grand_v5';
+let db=loadLocal(),session=null,serverVersion=Number(localStorage.getItem('workflow_server_version_v5')||0);
+let currentView='home',calendarMode=(db.settings?.ui?.defaultView||'month'),calendarCursor=new Date(),saveTimer=null,saving=false,pendingSave=false;
+let googleEvents=[],syncBusy=false;
+
+function uid(p='id'){return p+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
+function nowISO(){return new Date().toISOString()}
+function localISODate(d=new Date()){return d.toISOString().slice(0,10)}
+function esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function dateOnly(v){return String(v||'').slice(0,10)}
+function parseLocalDateTime(v){if(!v)return '';let d=new Date(v);return isNaN(d)?'':d.toISOString()}
+function localDateTime(v){if(!v)return '';let d=new Date(v);return isNaN(d)?String(v):d.toLocaleString([], {dateStyle:'medium',timeStyle:'short'})}
+function localTime(v){if(!v)return '';let d=new Date(v);return isNaN(d)?'':d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+function normalize(x){
+ x=x||{};x.streams=Array.isArray(x.streams)?x.streams:[];x.tasks=Array.isArray(x.tasks)?x.tasks:[];x.meetings=Array.isArray(x.meetings)?x.meetings:[];x.notes=Array.isArray(x.notes)?x.notes:[];x.milestones=Array.isArray(x.milestones)?x.milestones:[];
+ x.settings=x.settings||{};x.settings.email=Object.assign({dailyEnabled:false,dailyHour:8,weeklyEnabled:false,weeklyDay:1,weeklyHour:8,recipients:[],includeOverdue:true,includeDueToday:true,includeCompleted:true,includeWeeklyStats:true,includeMeetings:true,includeUpcoming:true},x.settings.email||{});
+ x.settings.calendar=Object.assign({enabled:false,calendarId:'primary',autoAddTasks:true,autoAddMeetings:true,twoWay:true,showExternal:true},x.settings.calendar||{});
+ x.settings.ui=Object.assign({theme:'paper',weekStartsMonday:true,defaultView:'month',defaultPriority:'Medium',compact:false},x.settings.ui||{});
+ x.settings.notion=Object.assign({enabled:false,databaseId:''},x.settings.notion||{});
+ return x;
+}
+function loadLocal(){try{return normalize(JSON.parse(localStorage.getItem(KEY)||'{}'))}catch{return normalize({})}}
+function localSave(){localStorage.setItem(KEY,JSON.stringify(db))}
+function toast(m,bad=false){let e=document.getElementById('toast');e.textContent=m;e.className='toast';e.style.background=bad?'var(--danger)':'var(--ink)';clearTimeout(window._toast);window._toast=setTimeout(()=>e.classList.add('hidden'),3500)}
+function setStatus(text,kind=''){let e=document.getElementById('syncStatus');e.textContent=text;e.className='status '+kind}
+function backendUrl(){return localStorage.getItem('workflow_script_url_v5')||''}
+function saveBootUrl(){let v=document.getElementById('bootUrl').value.trim();if(v)localStorage.setItem('workflow_script_url_v5',v);toast('Backend URL saved.');}
+async function api(action,payload={},retry=true){
+ const url=backendUrl();if(!url)throw Error('Apps Script Web App URL is not configured.');
+ const body=Object.assign({action,sessionToken:session?.token||'',baseVersion:serverVersion},payload);
+ const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
+ const out=await r.json();
+ if(!out.ok){
+   if(retry && String(out.error||'').startsWith('SYNC_CONFLICT')){
+     const latest=await api('load',{},false);
+     if(latest.data){db=normalize(latest.data);serverVersion=Number(latest.version||0);localSave();renderAll();throw Error('A server change was detected. Latest copy loaded; your unsynced local edit was not overwritten. Please review and save again.')}
+   }
+   throw Error(out.error||'Server request failed');
+ }
+ if(out.version!==undefined){serverVersion=Number(out.version);localStorage.setItem('workflow_server_version_v5',serverVersion)}
+ return out;
+}
+async function login(){
+ let u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;
+ if(!backendUrl()){session={local:true};enterApp();toast('Local mode: configure Apps Script in Settings.');return}
+ try{setStatus('Connecting…','busy');let out=await api('login',{username:u,password:p});session=out.session;serverVersion=Number(out.version||0);localStorage.setItem('workflow_server_version_v5',serverVersion);if(out.data)db=normalize(out.data);localSave();enterApp();setStatus('Synced','ok')}
+ catch(e){document.getElementById('loginMsg').textContent=e.message;setStatus('Offline','bad')}
+}
+async function setup(){
+ if(!backendUrl()){alert('Enter the deployed Apps Script Web App URL first.');return}
+ let u=prompt('Choose a username','admin');if(!u)return;let p=prompt('Choose a password');if(!p)return;let key=prompt('Enter SETUP_KEY from Apps Script');if(!key)return;
+ try{await api('setup',{setupKey:key,username:u,password:p});alert('Setup complete. Log in now.')}catch(e){alert(e.message)}
+}
+function enterApp(){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('app').classList.remove('hidden');applyTheme();renderAll()}
+function logout(){session=null;document.getElementById('app').classList.add('hidden');document.getElementById('loginScreen').classList.remove('hidden')}
+function showView(v){currentView=v;['home','calendar','tasks','meetings','notes','analytics','settings'].forEach(x=>document.getElementById(x+'View').classList.toggle('hidden',x!==v));renderAll()}
+function queueSave(){localSave();clearTimeout(saveTimer);saveTimer=setTimeout(syncPush,500)}
+async function syncPush(){
+ localSave();if(!backendUrl()||!session||session.local){setStatus('Local cache','');return}
+ if(saving){pendingSave=true;return}
+ saving=true;setStatus('Saving…','busy');
+ try{let out=await api('save',{data:db});if(out.data)db=normalize(out.data);localSave();setStatus('Synced','ok')}
+ catch(e){setStatus('Local only','bad');toast(e.message,true)}
+ finally{saving=false;if(pendingSave){pendingSave=false;syncPush()}}
+}
+async function saveSettingsServer(msg){
+ localSave();if(!backendUrl()||!session||session.local){toast(msg+' Local only.');return}
+ try{setStatus('Saving settings…','busy');let o=await api('saveSettings',{settings:db.settings});if(o.data)db=normalize(o.data);localSave();setStatus('Synced','ok');toast(msg)}
+ catch(e){setStatus('Local only','bad');toast('Saved locally, but server update failed: '+e.message,true)}
+}
+function streamName(id){return db.streams.find(s=>s.id===id)?.name||'Unassigned'}
+function taskDone(t){return t.status==='Completed'||t.completed}
+function taskDueState(t){if(taskDone(t))return 'done';let d=dateOnly(t.dueAt||t.deadline);if(!d)return '';let today=localISODate();if(d<today)return 'overdue';if(d===today)return 'today';return ''}
+function attentionScore(t){
+ let score=0;if(taskDueState(t)==='overdue')score+=60;else if(taskDueState(t)==='today')score+=40;else if(taskDueState(t)==='')score+=0;
+ if(t.priority==='High')score+=25;else if(t.priority==='Medium')score+=10;if(t.status==='Blocked')score+=15;
+ let deps=(t.dependencies||[]).map(id=>db.tasks.find(x=>x.id===id)).filter(Boolean);if(deps.some(d=>!taskDone(d)))score+=20;
+ return Math.min(100,score);
+}
+function taskEventDate(t){return t.startAt||t.dueAt||t.deadline}
+function allEvents(){
+ let a=[];
+ db.tasks.forEach(t=>{if(taskEventDate(t))a.push({id:t.id,type:'task',title:t.title||t.detail||'Task',at:taskEventDate(t),end:t.dueAt||t.startAt,streamId:t.streamId,task:t})});
+ db.meetings.forEach(m=>{if(m.startAt||m.date)a.push({id:m.id,type:'meeting',title:m.title||'Meeting',at:m.startAt||m.date,end:m.endAt,streamId:m.streamId,meeting:m})});
+ if(db.settings.calendar.showExternal)googleEvents.forEach(e=>a.push(e));
+ return a.sort((a,b)=>new Date(a.at)-new Date(b.at));
+}
+function renderAll(){applyTheme();renderHome();renderTasks();renderMeetings();renderNotes();renderCalendar();renderAnalytics();renderSettings()}
+function renderHome(){
+ let today=localISODate(),active=db.tasks.filter(t=>!taskDone(t)).length,done=db.tasks.filter(taskDone).length,over=db.tasks.filter(t=>taskDueState(t)==='overdue').length,due=db.tasks.filter(t=>taskDueState(t)==='today').length;
+ document.getElementById('greeting').textContent=new Date().getHours()<12?'Good morning.':new Date().getHours()<18?'Good afternoon.':'Good evening.';
+ document.getElementById('kpis').innerHTML=[['Active',active],['Due today',due],['Overdue',over],['Completed',done],['Meetings today',db.meetings.filter(m=>dateOnly(m.startAt||m.date)===today).length],['Pending hours',Math.round(db.tasks.filter(t=>!taskDone(t)).reduce((n,t)=>n+Number(t.estimateMinutes||0),0)/60*10)/10],['Blocked',db.tasks.filter(t=>!taskDone(t)&&t.status==='Blocked').length],['Streams',db.streams.length]].map(x=>`<div class="stat"><div class="klabel">${x[0]}</div><div class="kpi">${x[1]}</div></div>`).join('');
+ let attention=db.tasks.filter(t=>!taskDone(t)&&attentionScore(t)>0).sort((a,b)=>attentionScore(b)-attentionScore(a)).slice(0,8);
+ document.getElementById('attention').innerHTML=attention.length?attention.map(t=>`<div class="agenda-item"><div class="event-dot"></div><div style="flex:1"><b class="${taskDueState(t)==='overdue'?'danger-text':''}">${esc(t.title||t.detail||'Untitled')}</b><div class="mini muted">${esc(streamName(t.streamId))} · ${esc(t.status||'Backlog')} · Attention ${attentionScore(t)}/100 · ${t.dueAt?localDateTime(t.dueAt):'No deadline'}</div></div><button class="btn small" onclick="openTask('${t.id}')">Edit</button></div>`).join(''):'<div class="muted">Nothing urgent. Your queue is clear.</div>';
+ let agenda=allEvents().filter(e=>dateOnly(e.at)===today).slice(0,10);
+ document.getElementById('todayAgenda').innerHTML=agenda.length?agenda.map(e=>`<div class="agenda-item"><div class="event-dot"></div><div><b>${esc(e.title)}</b><div class="mini muted">${e.type==='meeting'?'Meeting':e.type==='external'?'Google Calendar':'Task'} · ${esc(streamName(e.streamId))}</div></div></div>`).join(''):'<div class="muted">No scheduled items today.</div>';
+ document.getElementById('streams').innerHTML=db.streams.length?db.streams.map(s=>{let ts=db.tasks.filter(t=>t.streamId===s.id),d=ts.filter(taskDone).length,p=ts.length?Math.round(d/ts.length*100):0;return `<div class="stream"><div class="split"><b>${esc(s.name)}</b><button class="btn small" onclick="openStream('${s.id}')">Open</button></div><div class="mini muted">${esc(s.description||'')}</div><div style="margin:10px 0" class="progress"><i style="width:${p}%"></i></div><div class="mini">${d}/${ts.length} tasks complete · ${p}%</div></div>`}).join(''):'<div class="muted">Create your first work stream.</div>';
+ let mins=db.tasks.filter(t=>!taskDone(t)).reduce((n,t)=>n+Number(t.estimateMinutes||0),0);
+ document.getElementById('workload').innerHTML=`<div class="kpi">${Math.round(mins/60*10)/10}h</div><div class="muted">estimated active workload</div><hr style="border:0;border-top:1px solid var(--line);margin:12px 0"><div>${db.tasks.filter(t=>t.priority==='High'&&!taskDone(t)).length} high-priority tasks</div>`;
+ let top=db.streams.map(s=>{let ts=db.tasks.filter(t=>t.streamId===s.id),d=ts.filter(taskDone).length;return {n:s.name,p:ts.length?Math.round(d/ts.length*100):0}}).sort((a,b)=>b.p-a.p);
+ document.getElementById('progressSnapshot').innerHTML=top.length?top.map(x=>`<div style="margin:10px 0"><div class="split"><span>${esc(x.n)}</span><b>${x.p}%</b></div><div class="progress"><i style="width:${x.p}%"></i></div></div>`).join(''):'<div class="muted">No stream data yet.</div>';
+ renderNotifications();
+}
+function renderNotifications(){
+ let n=[];db.tasks.forEach(t=>{if(!taskDone(t)&&taskDueState(t)==='overdue')n.push(['bad','Overdue: '+(t.title||'Task')]);if(!taskDone(t)&&t.status==='Blocked')n.push(['warn','Blocked: '+(t.title||'Task')]);let deps=(t.dependencies||[]).map(id=>db.tasks.find(x=>x.id===id)).filter(Boolean);if(!taskDone(t)&&deps.some(d=>!taskDone(d)))n.push(['warn','Dependency waiting: '+(t.title||'Task')])});
+ document.getElementById('notificationPanel').innerHTML=n.length?n.slice(0,12).map(x=>`<div class="notice ${x[0]}">${esc(x[1])}</div>`).join(''):'<div class="notice ok">No task alerts right now.</div>';
+}
+function fillStreamSelect(id,includeAll=true){
+ let e=document.getElementById(id);if(!e)return;let old=e.value;e.innerHTML=(includeAll?'<option value="">All streams</option>':'<option value="">Select stream…</option>')+db.streams.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');e.value=old;
+}
+function renderTasks(){
+ fillStreamSelect('taskStreamFilter');let tags=[...new Set(db.tasks.flatMap(t=>t.tags||[]))].sort(),te=document.getElementById('taskTagFilter'),old=te.value;te.innerHTML='<option value="">All tags</option>'+tags.map(t=>`<option>${esc(t)}</option>`).join('');te.value=old;
+ let q=(document.getElementById('taskSearch')?.value||'').toLowerCase(),sf=document.getElementById('taskStreamFilter')?.value||'',st=document.getElementById('taskStatusFilter')?.value||'',pf=document.getElementById('taskPriorityFilter')?.value||'',tf=te?.value||'';
+ let rows=db.tasks.filter(t=>(!q||JSON.stringify(t).toLowerCase().includes(q))&&(!sf||t.streamId===sf)&&(!st||(t.status||'Backlog')===st)&&(!pf||t.priority===pf)&&(!tf||(t.tags||[]).includes(tf)));
+ document.getElementById('taskBody').innerHTML=rows.length?rows.map(t=>`<tr><td><b class="${taskDone(t)?'done':''}">${esc(t.title||t.detail||'Untitled')}</b><div class="mini muted">${esc(t.description||'')}</div></td><td>${esc(streamName(t.streamId))}</td><td>${t.startAt?localDateTime(t.startAt)+' → ':''}${t.dueAt?localDateTime(t.dueAt):'—'} ${taskDueState(t)==='overdue'?'<span class="danger-text">Overdue</span>':''}</td><td><span class="badge">${esc(t.status||'Backlog')}</span></td><td><span class="badge ${(t.priority||'Medium').toLowerCase()}">${esc(t.priority||'Medium')}</span></td><td>${(t.tags||[]).map(x=>`<span class="badge">${esc(x)}</span>`).join('')}</td><td><button class="btn small" onclick="toggleTask('${t.id}')">✓</button> <button class="btn small" onclick="openTask('${t.id}')">Edit</button> <button class="btn small" onclick="deleteTask('${t.id}')">Delete</button></td></tr>`).join(''):'<tr><td colspan="7" class="muted">No tasks match the filters.</td></tr>';
+}
+function renderMeetings(){
+ fillStreamSelect('meetingStreamFilter');let q=(document.getElementById('meetingSearch')?.value||'').toLowerCase(),sf=document.getElementById('meetingStreamFilter')?.value||'';
+ let rows=db.meetings.filter(m=>(!q||JSON.stringify(m).toLowerCase().includes(q))&&(!sf||m.streamId===sf)).sort((a,b)=>new Date(b.startAt||b.date)-new Date(a.startAt||a.date));
+ document.getElementById('meetingList').innerHTML=rows.length?rows.map(m=>`<div class="agenda-item"><div class="event-dot"></div><div style="flex:1"><h3>${esc(m.title||'Meeting')}</h3><div class="mini muted">${esc(streamName(m.streamId))} · ${m.startAt?localDateTime(m.startAt):m.date||'No date'} · ${esc((m.people||[]).join(', '))}</div><p>${esc(m.purpose||'')}</p><div class="mini"><b>Agenda:</b> ${esc(m.agenda||'—')}<br><b>Decisions:</b> ${esc(m.decisions||'—')}<br><b>Actions:</b> ${esc(m.actions||'—')}<br><b>Follow-up:</b> ${esc(m.followUp||'—')}</div></div><div><button class="btn small" onclick="openMeeting('${m.id}')">Edit</button><button class="btn small" onclick="deleteMeeting('${m.id}')">Delete</button></div></div>`).join(''):'<div class="muted">No meetings recorded.</div>';
+}
+function renderNotes(){
+ let q=(document.getElementById('noteSearch')?.value||'').toLowerCase(),rows=db.notes.filter(n=>!q||JSON.stringify(n).toLowerCase().includes(q)).sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt));
+ document.getElementById('noteList').innerHTML=rows.length?rows.map(n=>`<div class="agenda-item"><div style="flex:1"><h3>${esc(n.title||'Untitled note')}</h3><div class="mini muted">${esc(n.tags||'')} · ${localDateTime(n.updatedAt||n.createdAt)}</div><p>${esc((n.body||'').slice(0,500))}${(n.body||'').length>500?'…':''}</p></div><div><button class="btn small" onclick="openNote('${n.id}')">Edit</button><button class="btn small" onclick="deleteNote('${n.id}')">Delete</button></div></div>`).join(''):'<div class="muted">No notes yet.</div>';
+}
+function monthStart(d){return new Date(d.getFullYear(),d.getMonth(),1)}
+function setCalendarMode(m){calendarMode=m;calendarCursor=new Date(calendarCursor);renderCalendar()}
+function calendarMove(n){if(calendarMode==='month')calendarCursor.setMonth(calendarCursor.getMonth()+n);else if(calendarMode==='week')calendarCursor.setDate(calendarCursor.getDate()+7*n);else calendarCursor.setDate(calendarCursor.getDate()+n);renderCalendar()}
+function calendarToday(){calendarCursor=new Date();renderCalendar()}
+function renderCalendar(){
+ document.getElementById('calendarTitle').innerHTML=`<h3>${calendarMode==='month'?calendarCursor.toLocaleString([],{month:'long',year:'numeric'}):calendarCursor.toLocaleDateString([],{dateStyle:'full'})}</h3><span class="muted mini">${allEvents().length} visible events${googleEvents.length?' · '+googleEvents.length+' from Google Calendar':''}</span>`;
+ ['Month','Week','Day','Agenda'].forEach(x=>{let b=document.getElementById('cv'+x);if(b)b.className='btn '+(calendarMode===x.toLowerCase()?'primary':'')});
+ if(calendarMode==='month')renderMonth();else if(calendarMode==='week')renderWeek();else if(calendarMode==='day')renderDay();else renderAgenda();
+}
+function eventHTML(e){return `<div class="event ${e.type==='meeting'?'meeting':''} ${e.type==='external'?'external':''} ${e.type==='task'&&taskDueState(e.task)==='overdue'?'overdue':''}" title="${esc(e.title)}" onclick="${e.type==='external'?'openExternalEvent(\''+esc(e.id)+'\')':'openEvent(\''+e.type+'\',\''+e.id+'\')'}">${e.type==='meeting'?'◷':e.type==='external'?'G':'✓'} ${esc(e.title)}</div>`}
+function renderMonth(){
+ let y=calendarCursor.getFullYear(),m=calendarCursor.getMonth(),first=new Date(y,m,1),start=new Date(first),shift=(start.getDay()+(db.settings.ui.weekStartsMonday?6:0))%7;start.setDate(start.getDate()-shift);
+ let html=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>`<div class="cal-head">${x}</div>`).join('');
+ for(let i=0;i<42;i++){let d=new Date(start);d.setDate(start.getDate()+i);let ev=allEvents().filter(e=>dateOnly(e.at)===localISODate(d));html+=`<div class="day ${d.getMonth()!==m?'other':''} ${localISODate(d)===localISODate()?'today':''}"><div class="daynum">${d.getDate()}</div>${ev.slice(0,7).map(eventHTML).join('')}${ev.length>7?`<div class="mini muted">+${ev.length-7} more</div>`:''}</div>`}
+ document.getElementById('calendarBody').innerHTML='<div class="calendar-shell"><div class="calendar-grid">'+html+'</div></div>';
+}
+function weekStart(d){let x=new Date(d),shift=(x.getDay()+(db.settings.ui.weekStartsMonday?6:0))%7;x.setDate(x.getDate()-shift);x.setHours(0,0,0,0);return x}
+function renderWeek(){
+ let start=weekStart(calendarCursor),html='<div class="calendar-shell"><div class="week-grid"><div class="cal-head">Time</div>';
+ for(let i=0;i<7;i++){let x=new Date(start);x.setDate(start.getDate()+i);html+=`<div class="cal-head">${x.toLocaleDateString([],{weekday:'short',day:'numeric'})}</div>`}
+ for(let h=0;h<24;h++){html+=`<div class="week-hour">${String(h).padStart(2,'0')}:00</div>`;for(let i=0;i<7;i++){let x=new Date(start);x.setDate(start.getDate()+i);let ev=allEvents().filter(e=>dateOnly(e.at)===localISODate(x)&&new Date(e.at).getHours()===h);html+=`<div class="week-cell">${ev.map(e=>`<div class="timeline-event ${e.type==='meeting'?'meeting':''} ${e.type==='external'?'external':''}" onclick="${e.type==='external'?'openExternalEvent(\''+esc(e.id)+'\')':'openEvent(\''+e.type+'\',\''+e.id+'\')'}">${esc(e.title)}</div>`).join('')}</div>`}}
+ html+='</div></div>';document.getElementById('calendarBody').innerHTML=html;
+}
+function renderDay(){
+ let d=localISODate(calendarCursor),ev=allEvents().filter(e=>dateOnly(e.at)===d);document.getElementById('calendarBody').innerHTML=ev.length?`<div class="list">${ev.map(e=>`<div class="agenda-item"><div class="time">${e.type==='external'?'Google':localTime(e.at)}</div><div style="flex:1"><b>${esc(e.title)}</b><div class="muted mini">${e.type} · ${esc(streamName(e.streamId))} ${e.end?'· ends '+localTime(e.end):''}</div></div><button class="btn small" onclick="${e.type==='external'?'openExternalEvent(\''+esc(e.id)+'\')':'openEvent(\''+e.type+'\',\''+e.id+'\')'}">Open</button></div>`).join('')}</div>`:'<div class="muted">No events for this day.</div>'
+}
+function renderAgenda(){
+ let ev=allEvents().filter(e=>new Date(e.at)>=new Date()).slice(0,60);document.getElementById('calendarBody').innerHTML=ev.length?ev.map(e=>`<div class="agenda-item"><div class="time">${new Date(e.at).toLocaleDateString([],{month:'short',day:'numeric'})}</div><div style="flex:1"><b>${esc(e.title)}</b><div class="muted mini">${e.type==='external'?'Google Calendar':e.type} · ${esc(streamName(e.streamId))} · ${localDateTime(e.at)}</div></div></div>`).join(''):'<div class="muted">No upcoming events.</div>';
+}
+function openExternalEvent(id){let e=googleEvents.find(x=>x.id===id);if(!e)return;alert((e.title||'Google Calendar event')+'\n\n'+localDateTime(e.at)+(e.end?' → '+localDateTime(e.end):'')+'\n\n'+(e.description||''))}
+function openEvent(type,id){type==='task'?openTask(id):openMeeting(id)}
+
+function openTask(id=''){
+ let t=db.tasks.find(x=>x.id===id)||{id:'',title:'',description:'',streamId:db.streams[0]?.id||'',subject:'',type:'General',priority:db.settings.ui.defaultPriority||'Medium',status:'Backlog',startAt:'',dueAt:'',estimateMinutes:30,tags:[],dependencies:[],recurrence:'',milestoneId:'',completed:false};
+ let depOptions=db.tasks.filter(x=>x.id!==id).map(x=>`<option value="${esc(x.id)}">${esc(x.title||x.id)}</option>`).join('');
+ let mileOptions=db.milestones.map(x=>`<option value="${esc(x.id)}" ${x.id===t.milestoneId?'selected':''}>${esc(x.title)}</option>`).join('');
+ document.getElementById('modalTitle').textContent=id?'Edit task':'New task';
+ document.getElementById('modalBody').innerHTML=`<div class="form-grid">
+ <div class="full"><label>Task title</label><input id="fTitle" value="${esc(t.title||t.detail)}"></div>
+ <div><label>Stream</label><select id="fStream"><option value="">Unassigned</option>${db.streams.map(s=>`<option value="${esc(s.id)}" ${s.id===t.streamId?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
+ <div><label>Status</label><select id="fStatus">${['Backlog','Next','In Progress','Blocked','Completed'].map(x=>`<option ${x===(t.status||'Backlog')?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div><label>Priority</label><select id="fPriority">${['High','Medium','Low'].map(x=>`<option ${x===t.priority?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div><label>Activity type</label><input id="fType" value="${esc(t.type||'General')}"></div>
+ <div><label>Subject / category</label><input id="fSubject" value="${esc(t.subject||'')}"></div>
+ <div><label>Start</label><input id="fStart" type="datetime-local" value="${t.startAt?new Date(t.startAt).toISOString().slice(0,16):''}"></div>
+ <div><label>Due</label><input id="fDue" type="datetime-local" value="${t.dueAt?new Date(t.dueAt).toISOString().slice(0,16):''}"></div>
+ <div><label>Estimated minutes</label><input id="fEstimate" type="number" min="0" value="${Number(t.estimateMinutes||0)}"></div>
+ <div><label>Tags (comma separated)</label><input id="fTags" value="${esc((t.tags||[]).join(', '))}"></div>
+ <div><label>Recurrence</label><select id="fRecurrence"><option value="">None</option><option ${t.recurrence==='daily'?'selected':''}>daily</option><option ${t.recurrence==='weekdays'?'selected':''}>weekdays</option><option ${t.recurrence==='weekly'?'selected':''}>weekly</option><option ${t.recurrence==='monthly'?'selected':''}>monthly</option></select></div>
+ <div><label>Milestone</label><select id="fMilestone"><option value="">None</option>${mileOptions}</select></div>
+ <div class="full"><label>Dependencies</label><select id="fDeps" multiple size="5">${depOptions}</select><div class="mini muted">Hold Ctrl/Cmd to select multiple predecessor tasks.</div></div>
+ <div class="full"><label>Description / notes</label><textarea id="fDesc">${esc(t.description||'')}</textarea></div>
+ </div><div class="toolbar"><button class="btn primary" onclick="saveTask('${id}')">Save task</button>${id?`<button class="btn danger" onclick="deleteTask('${id}');closeModal()">Delete</button>`:''}</div>`;
+ document.getElementById('fDeps').value=t.dependencies||[];document.getElementById('modal').classList.remove('hidden');
+}
+function saveTask(id){
+ let t=db.tasks.find(x=>x.id===id);if(!t){t={id:uid('task'),createdAt:nowISO()};db.tasks.push(t)}
+ let status=document.getElementById('fStatus').value,start=document.getElementById('fStart').value,due=document.getElementById('fDue').value;
+ if(start&&due&&new Date(due)<=new Date(start)){toast('Due time must be after the start time.',true);return}
+ let deps=[...document.getElementById('fDeps').selectedOptions].map(x=>x.value).filter(Boolean);if(deps.includes(t.id)){toast('A task cannot depend on itself.',true);return}
+ Object.assign(t,{title:document.getElementById('fTitle').value.trim(),streamId:document.getElementById('fStream').value,status,priority:document.getElementById('fPriority').value,type:document.getElementById('fType').value.trim(),subject:document.getElementById('fSubject').value.trim(),startAt:start?new Date(start).toISOString():'',dueAt:due?new Date(due).toISOString():'',estimateMinutes:Number(document.getElementById('fEstimate').value||0),tags:document.getElementById('fTags').value.split(',').map(x=>x.trim()).filter(Boolean),recurrence:document.getElementById('fRecurrence').value,milestoneId:document.getElementById('fMilestone').value,dependencies:deps,description:document.getElementById('fDesc').value,updatedAt:nowISO(),completed:status==='Completed'});
+ if(status==='Completed'&&!t.completedAt)t.completedAt=nowISO();if(status!=='Completed')t.completedAt='';
+ closeModal();queueSave();renderAll();if(db.settings.calendar.enabled&&db.settings.calendar.autoAddTasks)syncCalendarTask(t);
+}
+function toggleTask(id){let t=db.tasks.find(x=>x.id===id);if(!t)return;if(!taskDone(t)&&t.dependencies?.some(d=>{let x=db.tasks.find(q=>q.id===d);return x&&!taskDone(x)})){toast('Complete the task dependencies first.',true);return}t.completed=!t.completed;t.status=t.completed?'Completed':'Next';t.completedAt=t.completed?nowISO():'';queueSave();renderAll();if(db.settings.calendar.enabled)syncCalendarTask(t)}
+function deleteTask(id){let t=db.tasks.find(x=>x.id===id);db.tasks=db.tasks.filter(x=>x.id!==id);db.tasks.forEach(x=>x.dependencies=(x.dependencies||[]).filter(d=>d!==id));queueSave();renderAll();if(backendUrl()&&t?.calendarEventId)api('deleteCalendarTask',{taskId:id}).catch(()=>{});toast('Task deleted.')}
+async function syncCalendarTask(t){if(!backendUrl()||!session||session.local)return;try{let out=await api('calendarTask',{task:t});t.calendarEventId=out.eventId||'';localSave();toast('Google Calendar updated.')}catch(e){toast('Calendar sync failed: '+e.message,true)}}
+
+function openMeeting(id=''){
+ let m=db.meetings.find(x=>x.id===id)||{id:'',title:'',streamId:db.streams[0]?.id||'',date:localISODate(),startAt:'',endAt:'',people:[],purpose:'',agenda:'',decisions:'',actions:'',followUp:'',location:''};
+ document.getElementById('modalTitle').textContent=id?'Edit meeting':'Quick meeting';
+ document.getElementById('modalBody').innerHTML=`<div class="form-grid">
+ <div class="full"><label>Meeting title</label><input id="mTitle" value="${esc(m.title)}"></div>
+ <div><label>Stream / project</label><select id="mStream"><option value="">General / Unassigned</option>${db.streams.map(s=>`<option value="${esc(s.id)}" ${s.id===m.streamId?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
+ <div><label>Date</label><input id="mDate" type="date" value="${esc(m.date||dateOnly(m.startAt)||localISODate())}"></div>
+ <div><label>Start time</label><input id="mStart" type="time" value="${m.startAt?new Date(m.startAt).toTimeString().slice(0,5):''}"></div>
+ <div><label>End time</label><input id="mEnd" type="time" value="${m.endAt?new Date(m.endAt).toTimeString().slice(0,5):''}"></div>
+ <div><label>Location / link</label><input id="mLocation" value="${esc(m.location||'')}"></div>
+ <div class="full"><label>People</label><input id="mPeople" value="${esc((m.people||[]).join(', '))}" placeholder="Names / teams / email addresses"></div>
+ <div class="full"><label>Purpose</label><input id="mPurpose" value="${esc(m.purpose||'')}"></div>
+ <div class="full"><label>Agenda</label><textarea id="mAgenda">${esc(m.agenda||'')}</textarea></div>
+ <div><label>Decisions</label><textarea id="mDecisions">${esc(m.decisions||'')}</textarea></div>
+ <div><label>Actions</label><textarea id="mActions">${esc(m.actions||'')}</textarea></div>
+ <div class="full"><label>Follow-up</label><input id="mFollow" value="${esc(m.followUp||'')}"></div>
+ </div><div class="toolbar"><button class="btn primary" onclick="saveMeeting('${id}')">Save meeting</button>${id?`<button class="btn danger" onclick="deleteMeeting('${id}');closeModal()">Delete</button>`:''}</div>`;
+ document.getElementById('modal').classList.remove('hidden');
+}
+function saveMeeting(id){
+ let m=db.meetings.find(x=>x.id===id);if(!m){m={id:uid('meeting'),createdAt:nowISO()};db.meetings.push(m)}
+ let date=document.getElementById('mDate').value,start=document.getElementById('mStart').value,end=document.getElementById('mEnd').value;
+ let startAt=date?(start?new Date(date+'T'+start).toISOString():new Date(date+'T00:00').toISOString()):'',endAt='';
+ if(date){if(end)endAt=new Date(date+'T'+end).toISOString();else endAt=new Date(new Date(startAt).getTime()+3600000).toISOString();if(new Date(endAt)<=new Date(startAt))endAt=new Date(new Date(startAt).getTime()+3600000).toISOString()}
+ Object.assign(m,{title:document.getElementById('mTitle').value.trim(),streamId:document.getElementById('mStream').value,date,startAt,endAt,people:document.getElementById('mPeople').value.split(',').map(x=>x.trim()).filter(Boolean),location:document.getElementById('mLocation').value,purpose:document.getElementById('mPurpose').value,agenda:document.getElementById('mAgenda').value,decisions:document.getElementById('mDecisions').value,actions:document.getElementById('mActions').value,followUp:document.getElementById('mFollow').value,updatedAt:nowISO()});
+ closeModal();queueSave();renderAll();if(db.settings.calendar.enabled&&db.settings.calendar.autoAddMeetings)syncCalendarMeeting(m);
+}
+async function syncCalendarMeeting(m){if(!backendUrl()||!session||session.local)return;try{let out=await api('calendarMeeting',{meeting:m});m.calendarEventId=out.eventId||'';localSave();toast('Meeting synchronized with Google Calendar.')}catch(e){toast('Calendar sync failed: '+e.message,true)}}
+function deleteMeeting(id){let m=db.meetings.find(x=>x.id===id);db.meetings=db.meetings.filter(x=>x.id!==id);queueSave();renderAll();if(backendUrl()&&m?.calendarEventId)api('deleteCalendarMeeting',{meetingId:id}).catch(()=>{});toast('Meeting deleted.')}
+function openNote(id=''){let n=db.notes.find(x=>x.id===id)||{id:'',title:'',tags:'',body:''};document.getElementById('modalTitle').textContent=id?'Edit note':'New note';document.getElementById('modalBody').innerHTML=`<div class="form-grid"><div class="full"><label>Title</label><input id="nTitle" value="${esc(n.title)}"></div><div class="full"><label>Tags</label><input id="nTags" value="${esc(n.tags||'')}"></div><div class="full"><label>Note</label><textarea id="nBody" style="min-height:280px">${esc(n.body||'')}</textarea></div></div><div class="toolbar"><button class="btn primary" onclick="saveNote('${id}')">Save note</button>${id?`<button class="btn danger" onclick="deleteNote('${id}');closeModal()">Delete</button>`:''}</div>`;document.getElementById('modal').classList.remove('hidden')}
+function saveNote(id){let n=db.notes.find(x=>x.id===id);if(!n){n={id:uid('note'),createdAt:nowISO()};db.notes.push(n)}Object.assign(n,{title:document.getElementById('nTitle').value.trim(),tags:document.getElementById('nTags').value,body:document.getElementById('nBody').value,updatedAt:nowISO()});closeModal();queueSave();renderAll()}
+function deleteNote(id){db.notes=db.notes.filter(x=>x.id!==id);queueSave();renderAll();toast('Note deleted.')}
+function openStream(id=''){let s=db.streams.find(x=>x.id===id)||{id:'',name:'',description:'',goal:'',archived:false};document.getElementById('modalTitle').textContent=id?'Edit stream':'New stream';document.getElementById('modalBody').innerHTML=`<div class="form-grid"><div><label>Name</label><input id="sName" value="${esc(s.name)}"></div><div><label>Goal</label><input id="sGoal" value="${esc(s.goal||'')}"></div><div class="full"><label>Description</label><textarea id="sDesc">${esc(s.description||'')}</textarea></div><label class="check"><input id="sArchived" type="checkbox" ${s.archived?'checked':''}> Archived</label></div><div class="toolbar"><button class="btn primary" onclick="saveStream('${id}')">Save stream</button>${id?`<button class="btn danger" onclick="deleteStream('${id}');closeModal()">Delete</button>`:''}</div>`;document.getElementById('modal').classList.remove('hidden')}
+function saveStream(id){let s=db.streams.find(x=>x.id===id);if(!s){s={id:uid('stream'),createdAt:nowISO()};db.streams.push(s)}Object.assign(s,{name:document.getElementById('sName').value.trim(),goal:document.getElementById('sGoal').value,description:document.getElementById('sDesc').value,archived:document.getElementById('sArchived').checked,updatedAt:nowISO()});if(!s.name){toast('Stream name is required.',true);return}closeModal();queueSave();renderAll()}
+function deleteStream(id){if(db.tasks.some(t=>t.streamId===id)||db.meetings.some(m=>m.streamId===id)){alert('This stream still has tasks or meetings. Move them first.');return}db.streams=db.streams.filter(x=>x.id!==id);queueSave();renderAll()}
+function openSettings(){showView('settings')}
+function renderSettings(){
+ let e=document.getElementById('settingsGrid');if(!e)return;let cal=db.settings.calendar,email=db.settings.email,ui=db.settings.ui;
+ e.innerHTML=`
+ <div class="card wide"><h3>Apps Script backend</h3><label>Web App /exec URL</label><input id="scriptUrl" value="${esc(backendUrl())}" placeholder="https://script.google.com/macros/s/.../exec"><div class="toolbar"><button class="btn primary" onclick="saveBackendUrl()">Save URL</button><button class="btn" onclick="testBackend()">Test connection</button><button class="btn" onclick="pullServer()">Pull latest</button><button class="btn" onclick="forceSync()">Sync now</button></div><div id="syncDiag" class="notice">Server version: ${serverVersion||0}. Local/server writes are serialized.</div></div>
+ <div class="card"><h3>Google Calendar</h3><button class="btn" onclick="loadCalendars()">Load my calendars</button><label>Calendar</label><select id="calSelect"><option value="${esc(cal.calendarId||'primary')}">${esc(cal.calendarId==='primary'?'Primary calendar':cal.calendarId||'Primary calendar')}</option></select><label class="check"><input id="calEnabled" type="checkbox" ${cal.enabled?'checked':''}> Enable Calendar sync</label><label class="check"><input id="autoTasks" type="checkbox" ${cal.autoAddTasks?'checked':''}> Auto-add/update tasks</label><label class="check"><input id="autoMeetings" type="checkbox" ${cal.autoAddMeetings?'checked':''}> Auto-add/update meetings</label><label class="check"><input id="twoWay" type="checkbox" ${cal.twoWay?'checked':''}> Two-way sync for linked events</label><label class="check"><input id="showExternal" type="checkbox" ${cal.showExternal?'checked':''}> Show external Google events</label><div class="toolbar"><button class="btn primary" onclick="saveCalendarSettings()">Save calendar settings</button><button class="btn" onclick="syncGoogleCalendar()">Sync now</button></div><p class="mini muted">Calendar permissions are requested by Apps Script when these actions are first used.</p></div>
+ <div class="card"><h3>Email reports</h3><label class="check"><input id="dailyOn" type="checkbox" ${email.dailyEnabled?'checked':''}> Daily email</label><label>Daily hour (0–23)</label><input id="dailyHour" type="number" min="0" max="23" value="${email.dailyHour}"><label class="check"><input id="weeklyOn" type="checkbox" ${email.weeklyEnabled?'checked':''}> Weekly email</label><label>Weekly day (1=Mon … 7=Sun)</label><input id="weeklyDay" type="number" min="1" max="7" value="${email.weeklyDay}"><label>Weekly hour (0–23)</label><input id="weeklyHour" type="number" min="0" max="23" value="${email.weeklyHour}"><label>Recipients</label><input id="recipients" value="${esc((email.recipients||[]).join(', '))}"><label class="check"><input id="incOver" type="checkbox" ${email.includeOverdue?'checked':''}> Overdue</label><label class="check"><input id="incToday" type="checkbox" ${email.includeDueToday?'checked':''}> Due today</label><label class="check"><input id="incComp" type="checkbox" ${email.includeCompleted?'checked':''}> Completed</label><label class="check"><input id="incStats" type="checkbox" ${email.includeWeeklyStats?'checked':''}> Weekly statistics</label><label class="check"><input id="incMeet" type="checkbox" ${email.includeMeetings?'checked':''}> Meetings</label><label class="check"><input id="incUpcoming" type="checkbox" ${email.includeUpcoming?'checked':''}> Upcoming deadlines</label><div class="toolbar"><button class="btn primary" onclick="saveEmailSettings()">Save & update triggers</button><button class="btn" onclick="sendTestEmail()">Send test</button><button class="btn" onclick="emailDiagnostics()">Diagnostics</button></div><div id="emailDiag" class="mini muted"></div></div>
+ <div class="card"><h3>Interface</h3><label>Theme</label><select id="theme"><option value="paper">Paper diary</option><option value="dark">Dark desk</option></select><label>Default calendar view</label><select id="defaultView"><option value="month">Month</option><option value="week">Week</option><option value="day">Day</option><option value="agenda">Agenda</option></select><label>Default priority</label><select id="defaultPriority"><option>High</option><option>Medium</option><option>Low</option></select><label class="check"><input id="monday" type="checkbox" ${ui.weekStartsMonday?'checked':''}> Week starts Monday</label><label class="check"><input id="compact" type="checkbox" ${ui.compact?'checked':''}> Compact dashboard</label><button class="btn primary" onclick="saveUISettings()">Save interface settings</button></div>
+ <div class="card"><h3>Milestones</h3><button class="btn primary" onclick="openMilestone()">＋ New milestone</button><div id="milestoneList" class="list" style="margin-top:10px">${renderMilestoneList()}</div></div>
+ <div class="card"><h3>Notion</h3><label class="check"><input id="notionOn" type="checkbox" ${db.settings.notion.enabled?'checked':''}> Enable optional Notion task sync</label><label>Database ID</label><input id="notionDb" value="${esc(db.settings.notion.databaseId||'')}"><button class="btn" onclick="saveNotion()">Save Notion settings</button><p class="mini muted">The Notion token must be stored in Apps Script Properties. It is never placed in this HTML file.</p></div>
+ <div class="card"><h3>Data safety</h3><div class="toolbar"><button class="btn" onclick="exportData()">Export JSON</button><label class="btn">Import JSON<input id="importData" type="file" accept="application/json" style="display:none" onchange="importDataFile(event)"></label><button class="btn" onclick="loadBackups()">Backups</button></div><div id="backupArea" class="mini muted">Server backups appear here after loading.</div></div>
+ <div class="card full"><h3>Grand Edition feature set</h3><div class="feature-list"><div>✓ Streams / projects</div><div>✓ Tasks & statuses</div><div>✓ Priorities</div><div>✓ Subjects & activity types</div><div>✓ Tags</div><div>✓ Start & due times</div><div>✓ Workload estimates</div><div>✓ Recurring-task engine</div><div>✓ Dependencies</div><div>✓ Milestones</div><div>✓ Completion tracking</div><div>✓ Global search & filters</div><div>✓ Quick Meeting stream selection</div><div>✓ Timed meetings</div><div>✓ Meeting records</div><div>✓ Month calendar</div><div>✓ Week calendar</div><div>✓ Day calendar</div><div>✓ Agenda view</div><div>✓ Google Calendar selector</div><div>✓ Two-way linked-event sync</div><div>✓ External Google events</div><div>✓ Calendar deletion/update</div><div>✓ Daily email</div><div>✓ Weekly email</div><div>✓ Email customization</div><div>✓ Email diagnostics</div><div>✓ Server backups</div><div>✓ Import/export</div><div>✓ Sync status & conflict protection</div><div>✓ Notifications</div><div>✓ Analytics</div><div>✓ Attention scoring</div><div>✓ Theme customization</div><div>✓ Optional Notion configuration</div></div></div>`;
+ document.getElementById('theme').value=ui.theme||'paper';document.getElementById('defaultView').value=ui.defaultView||'month';document.getElementById('defaultPriority').value=ui.defaultPriority||'Medium';
+}
+function renderMilestoneList(){return db.milestones.length?db.milestones.map(m=>`<div class="agenda-item"><div style="flex:1"><b>${esc(m.title)}</b><div class="mini muted">${m.dueDate||'No due date'} · ${m.status||'Open'}</div></div><button class="btn small" onclick="openMilestone('${m.id}')">Edit</button></div>`).join(''):'<div class="muted">No milestones yet.</div>'}
+function openMilestone(id=''){let m=db.milestones.find(x=>x.id===id)||{id:'',title:'',dueDate:'',status:'Open',description:''};document.getElementById('modalTitle').textContent=id?'Edit milestone':'New milestone';document.getElementById('modalBody').innerHTML=`<div class="form-grid"><div class="full"><label>Milestone</label><input id="miTitle" value="${esc(m.title)}"></div><div><label>Due date</label><input id="miDate" type="date" value="${esc(m.dueDate||'')}"></div><div><label>Status</label><select id="miStatus"><option ${m.status==='Open'?'selected':''}>Open</option><option ${m.status==='In Progress'?'selected':''}>In Progress</option><option ${m.status==='Completed'?'selected':''}>Completed</option></select></div><div class="full"><label>Description</label><textarea id="miDesc">${esc(m.description||'')}</textarea></div></div><div class="toolbar"><button class="btn primary" onclick="saveMilestone('${id}')">Save milestone</button>${id?`<button class="btn danger" onclick="deleteMilestone('${id}');closeModal()">Delete</button>`:''}</div>`;document.getElementById('modal').classList.remove('hidden')}
+function saveMilestone(id){let m=db.milestones.find(x=>x.id===id);if(!m){m={id:uid('milestone'),createdAt:nowISO()};db.milestones.push(m)}Object.assign(m,{title:document.getElementById('miTitle').value.trim(),dueDate:document.getElementById('miDate').value,status:document.getElementById('miStatus').value,description:document.getElementById('miDesc').value,updatedAt:nowISO()});if(!m.title){toast('Milestone title is required.',true);return}closeModal();queueSave();renderAll()}
+function deleteMilestone(id){db.milestones=db.milestones.filter(x=>x.id!==id);db.tasks.forEach(t=>{if(t.milestoneId===id)t.milestoneId=''});queueSave();renderAll()}
+function renderAnalytics(){
+ let total=db.tasks.length,done=db.tasks.filter(taskDone).length,active=total-done,over=db.tasks.filter(t=>taskDueState(t)==='overdue').length,mins=db.tasks.filter(t=>!taskDone(t)).reduce((n,t)=>n+Number(t.estimateMinutes||0),0);
+ document.getElementById('analyticsStats').innerHTML=[['Completion',total?Math.round(done/total*100)+'%':'0%'],['Active',active],['Overdue',over],['Workload',Math.round(mins/60*10)/10+'h'],['High priority',db.tasks.filter(t=>t.priority==='High'&&!taskDone(t)).length],['Blocked',db.tasks.filter(t=>t.status==='Blocked'&&!taskDone(t)).length],['Meetings',db.meetings.length],['Notes',db.notes.length]].map(x=>`<div class="stat"><div class="klabel">${x[0]}</div><div class="kpi">${x[1]}</div></div>`).join('');
+ document.getElementById('analyticsStreams').innerHTML=db.streams.length?db.streams.map(s=>{let ts=db.tasks.filter(t=>t.streamId===s.id),d=ts.filter(taskDone).length,p=ts.length?Math.round(d/ts.length*100):0;return `<div style="margin:12px 0"><div class="split"><b>${esc(s.name)}</b><span>${d}/${ts.length} · ${p}%</span></div><div class="progress"><i style="width:${p}%"></i></div></div>`}).join(''):'<div class="muted">No streams.</div>';
+ let pc=['High','Medium','Low'].map(p=>[p,db.tasks.filter(t=>t.priority===p).length]);document.getElementById('analyticsPriority').innerHTML=pc.map(x=>`<div class="notice"><b>${x[0]}</b><span style="float:right">${x[1]}</span></div>`).join('');
+ let upcoming=db.tasks.filter(t=>!taskDone(t)&&t.dueAt).sort((a,b)=>new Date(a.dueAt)-new Date(b.dueAt)).slice(0,15);document.getElementById('analyticsUpcoming').innerHTML=upcoming.length?upcoming.map(t=>`<div class="agenda-item"><div class="time">${dateOnly(t.dueAt)}</div><div style="flex:1"><b>${esc(t.title)}</b><div class="mini muted">${esc(streamName(t.streamId))} · ${t.priority} · ${t.estimateMinutes||0} min</div></div></div>`).join(''):'<div class="muted">No upcoming deadlines.</div>';
+}
+function saveBackendUrl(){let v=document.getElementById('scriptUrl').value.trim();if(v)localStorage.setItem('workflow_script_url_v5',v);renderSettings();toast('Backend URL saved.')}
+async function testBackend(){try{let o=await api('ping');toast('Backend connected. '+(o.message||''));setStatus('Connected','ok')}catch(e){toast(e.message,true);setStatus('Offline','bad')}}
+async function pullServer(){try{let o=await api('load');if(o.data){db=normalize(o.data);localSave();renderAll();toast('Latest server data loaded.')}}catch(e){toast(e.message,true)}}
+async function forceSync(){await syncPush()}
+async function loadCalendars(){try{let o=await api('listCalendars');let e=document.getElementById('calSelect');e.innerHTML=(o.calendars||[]).map(c=>`<option value="${esc(c.id)}">${esc(c.name)}${c.primary?' (Primary)':''}</option>`).join('');e.value=db.settings.calendar.calendarId||'primary';toast('Calendars loaded.')}catch(e){toast(e.message,true)}}
+async function syncGoogleCalendar(){if(syncBusy)return;syncBusy=true;try{let start=new Date(calendarCursor),end=new Date(calendarCursor);if(calendarMode==='month'){start=new Date(start.getFullYear(),start.getMonth(),1);end=new Date(start.getFullYear(),start.getMonth()+1,7)}else if(calendarMode==='week'){start=weekStart(start);end=new Date(start);end.setDate(end.getDate()+7)}else{start.setHours(0,0,0,0);end=new Date(start);end.setDate(end.getDate()+1)}let o=await api('calendarSync',{start:start.toISOString(),end:end.toISOString(),twoWay:db.settings.calendar.twoWay,showExternal:db.settings.calendar.showExternal});googleEvents=o.events||[];if(o.updatedData)db=normalize(o.updatedData);localSave();renderAll();toast('Google Calendar synchronized.')}catch(e){toast('Calendar sync failed: '+e.message,true)}finally{syncBusy=false}}
+async function saveCalendarSettings(){let e=document.getElementById('calSelect');Object.assign(db.settings.calendar,{enabled:document.getElementById('calEnabled').checked,calendarId:e?.value||document.getElementById('calId')?.value||'primary',autoAddTasks:document.getElementById('autoTasks').checked,autoAddMeetings:document.getElementById('autoMeetings').checked,twoWay:document.getElementById('twoWay').checked,showExternal:document.getElementById('showExternal').checked});await saveSettingsServer('Calendar settings saved.');if(db.settings.calendar.enabled)syncGoogleCalendar()}
+async function saveEmailSettings(){let h=Math.max(0,Math.min(23,Number(document.getElementById('dailyHour').value)||8)),wh=Math.max(0,Math.min(23,Number(document.getElementById('weeklyHour').value)||8)),wd=Math.max(1,Math.min(7,Number(document.getElementById('weeklyDay').value)||1));Object.assign(db.settings.email,{dailyEnabled:document.getElementById('dailyOn').checked,dailyHour:h,weeklyEnabled:document.getElementById('weeklyOn').checked,weeklyDay:wd,weeklyHour:wh,recipients:document.getElementById('recipients').value.split(',').map(x=>x.trim()).filter(Boolean),includeOverdue:document.getElementById('incOver').checked,includeDueToday:document.getElementById('incToday').checked,includeCompleted:document.getElementById('incComp').checked,includeWeeklyStats:document.getElementById('incStats').checked,includeMeetings:document.getElementById('incMeet').checked,includeUpcoming:document.getElementById('incUpcoming').checked});await saveSettingsServer('Email settings saved and triggers refreshed.')}
+async function sendTestEmail(){try{await api('sendTestEmail');toast('Test email sent.')}catch(e){toast(e.message,true)}}
+async function emailDiagnostics(){try{let o=await api('emailDiagnostics');document.getElementById('emailDiag').innerHTML=`Recipients: <b>${o.recipientCount}</b> · Daily trigger: <b>${o.dailyTrigger?'ON':'OFF'}</b> · Weekly trigger: <b>${o.weeklyTrigger?'ON':'OFF'}</b><br>Timezone: ${esc(o.timezone)} · Last recorded daily run: ${esc(o.lastDailyRun||'—')} · Last weekly run: ${esc(o.lastWeeklyRun||'—')}`;}catch(e){document.getElementById('emailDiag').textContent=e.message}}
+function saveUISettings(){db.settings.ui.theme=document.getElementById('theme').value;db.settings.ui.defaultView=document.getElementById('defaultView').value;db.settings.ui.defaultPriority=document.getElementById('defaultPriority').value;db.settings.ui.weekStartsMonday=document.getElementById('monday').checked;db.settings.ui.compact=document.getElementById('compact').checked;calendarMode=db.settings.ui.defaultView;queueSave();renderAll();toast('Interface settings saved.')}
+async function saveNotion(){db.settings.notion={enabled:document.getElementById('notionOn').checked,databaseId:document.getElementById('notionDb').value.trim()};await saveSettingsServer('Notion settings saved.')}
+function applyTheme(){document.body.classList.toggle('theme-dark',db.settings?.ui?.theme==='dark')}
+function exportData(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.download='workflow-backup-'+localISODate()+'.json';a.click();URL.revokeObjectURL(a.href)}
+function importDataFile(ev){let f=ev.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{db=normalize(JSON.parse(r.result));localSave();renderAll();queueSave();toast('Import complete; syncing to server.')}catch{toast('Invalid JSON backup.',true)}};r.readAsText(f)}
+async function loadBackups(){try{let o=await api('backups');document.getElementById('backupArea').innerHTML=o.backups?.length?o.backups.map(b=>`<div class="agenda-item"><div><b>Version ${b.version}</b><div>${localDateTime(b.createdAt)} · ${esc(b.label||'Automatic')}</div></div><button class="btn small" onclick="restoreBackup('${b.id}')">Restore</button></div>`).join(''):'No backups yet.'}catch(e){document.getElementById('backupArea').textContent=e.message}}
+async function restoreBackup(id){if(!confirm('Restore this server backup?'))return;try{let o=await api('restoreBackup',{id});if(o.data){db=normalize(o.data);serverVersion=Number(o.version||0);localStorage.setItem('workflow_server_version_v5',serverVersion);localSave();renderAll();toast('Backup restored.')}}catch(e){toast(e.message,true)}}
+function closeModal(){document.getElementById('modal').classList.add('hidden')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()})
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()})
+document.getElementById('bootUrl').value=backendUrl();
+</script>
+</body>
+</html>
